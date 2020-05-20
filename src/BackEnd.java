@@ -55,7 +55,7 @@ public class BackEnd {
 	public static Connection makeDatabaseConnection() {
 		try {
 			//Should be changed if the programme is being re exported
-			conn = DriverManager.getConnection("jdbc:ucanaccess://./SpreadsheetDB-Copy.accdb;");	// Connect to MS Access Database
+			conn = DriverManager.getConnection("jdbc:ucanaccess://./SpreadsheetDB.accdb;");	// Connect to MS Access Database
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
