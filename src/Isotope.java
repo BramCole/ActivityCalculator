@@ -146,7 +146,7 @@ public class Isotope {
 			e1.printStackTrace();
 		}
 		
-		double tot = 0;
+		double tot = 0;   //total adds the range nt and crossection for some sort of error check
 		for(int j = 0; j < data.length; j++) {
 			for(int k = 1; k < data[j].length; k++) {
 				tot += data[j][k];
@@ -169,7 +169,7 @@ public class Isotope {
 			JOptionPane.showMessageDialog(null,  error, "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 
-		int energyIndex = getEnergyIndex(energy);
+		int energyIndex = getEnergyIndex(energy); //TODO getEnergy index should be renamed to getEnergy or even better getEnergyInputRowNum
 
 		if(energyIndex == -1){
 			outNeutronYield = 0;
@@ -177,7 +177,7 @@ public class Isotope {
 			outSourceDecayActivity = 0;
 		}
 		// Only do the calculations up to the specified energy level
-		for (int i = 0; i <= energyIndex; i++) {
+		for (int i = 0; i <= energyIndex; i++) {  //TODO these are all calculations they should be contained in therir own function or moved to calculations function or the calculations function needs to be renamed
 			@SuppressWarnings("unused")
 			InterpolatedValues result;		
 
@@ -188,7 +188,7 @@ public class Isotope {
 			double ratio;
 			double neutronYield;
 
-			if(i == energyIndex) {
+			if(i == energyIndex) {  //TODO if we just put this if statment after the for loop and make the for loop loop to energyindex-1 then we dont need the if statment
 				result = BackEnd.getInterpolatedValues(energy, name);
 				double nT1 = data[i][2];
 				double crossSection1 = data[i][3];
@@ -219,7 +219,7 @@ public class Isotope {
 
 			double summationNeutronYield;
 			if(i == 0) {
-				summationNeutronYield = neutronYieldxAbundance;
+				summationNeutronYield = neutronYieldxAbundance;  //TODO summationNeutronYield intilize to zero get rid of if statment
 			}
 			else {
 				summationNeutronYield = neutronYieldxAbundance + calculations.get(i-1)[3];	// add previous summationNeutronYield value

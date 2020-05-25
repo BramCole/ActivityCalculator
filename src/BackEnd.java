@@ -523,7 +523,7 @@ public class BackEnd {
 	}
 
 	// This method will take an isotopeData ResultSet and a target energy and will find the energy level 
-	public static int getEnergyLevelToReplace(ResultSet isotopeData, double targetEnergy) throws SQLException {
+	public static int getEnergyLevelToReplace(ResultSet isotopeData, double targetEnergy) throws SQLException {  //TODO this is redundant isotopes class already has index of row of last energy level
 		int i = 0;
 		double startEnergy = 0;
 		while(isotopeData.next()) {
@@ -585,6 +585,7 @@ public class BackEnd {
 			if(isotopeData.next()) {
 
 				energyHigh = Double.parseDouble(isotopeData.getString(1));
+				//System.out.println(isotopeData.getString(1));
 				nTHigh = Double.parseDouble(isotopeData.getString(2));
 				try {
 					crossSectionHigh = Double.parseDouble(isotopeData.getString(3));
