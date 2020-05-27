@@ -185,7 +185,7 @@ public class Isotope {
 
 			double nT;
 			double crossSection;
-			double ratio;
+			double ratio;//removed
 			double neutronYield;
 
 			if(i == energyIndex) {  //TODO if we just put this if statment after the for loop and make the for loop loop to energyindex-1 then we dont need the if statment
@@ -196,7 +196,7 @@ public class Isotope {
 				crossSection = result.crossSection;
 				ratio = result.ratio;
 				double neutronYield1 = nT1 * crossSection1 * current * 60.0;
-				neutronYield = (nT * crossSection * current * 60.0 * ratio) + neutronYield1;
+				neutronYield = (nT * crossSection * current * 60.0) + neutronYield1;
 			}
 
 			else {

@@ -544,7 +544,7 @@ public class BackEnd {
 	}
 
 	// This method will return the cross section and delta range, linearly interpolated from the data in the database
-	public static InterpolatedValues getInterpolatedValues(double targetEnergy, String isotopeName) {
+	public static InterpolatedValues getInterpolatedValues(double targetEnergy, String isotopeName) {//TODO alter so it only interpolates 1 value and call twice
 
 		try {	
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
