@@ -908,7 +908,7 @@ public class GUI extends JFrame {
 							JOptionPane.showMessageDialog(null,  "Please Make sure energy is in standard notation ", "Error", JOptionPane.WARNING_MESSAGE);
 							break;
 						}
-						
+
 						
 						thisStep.irradiationTime = irradiationTime;
 						thisStep.decayTime = decayTime; 

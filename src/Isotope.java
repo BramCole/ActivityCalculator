@@ -234,7 +234,7 @@ public class Isotope {
 			}
 
 			if(i==thresholdIndex){  //lets say threshold at 5.3 adds a bin at 5.3 to sum
-				result = BackEnd.getInterpolatedValues(energy, name);
+				result = BackEnd.getInterpolatedValues(threshHoldEnergy, name);
 				nT = result.nT;
 				crossSection = result.crossSection;
 				neutronYield = (nT * crossSection * current * 60.0);
