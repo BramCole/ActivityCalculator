@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.accessibility.AccessibleContext;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -246,12 +247,12 @@ public class GUI extends JFrame {
 					int choice = JOptionPane.showOptionDialog(contentPane, "Are you sure you want to close " + tabName + "?" , "Close " + tabName, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
 					if(choice == 0) {
 						tabbedPane.remove(tabToRemove);
-						if(selectedTabIndex == tabToRemove) {
+
+						if(selectedTabIndex == tabToRemove) {  //if removing tab we are currently viewing then it cycles to another tab once it closes
 							if(selectedTabIndex != 0)
 								tabbedPane.setSelectedIndex(tabToRemove - 1);
 						}
 					}
-
 				}
 				else
 					JOptionPane.showMessageDialog(null,  "Must have at least one step!", "Error", JOptionPane.WARNING_MESSAGE);

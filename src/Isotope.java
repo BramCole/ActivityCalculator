@@ -26,6 +26,7 @@ public class Isotope {
 	double outSourceDecayActivity;
 	double outgamma;
 	double doseRate;
+	double qValue;
 
 	ArrayList<Object[]> breakdownArray = new ArrayList<>();
 	ArrayList<Object[]> energyBreakdownArray = new ArrayList<>();
@@ -92,14 +93,21 @@ public class Isotope {
 		decayTime = irradiationParams[3];
 		fractionalWeight = fw;
 
+
+		String queryQ = "SELECT qPn FROM isotopes WHERE isotope='" + name + "'";
+
+
+
 		try {
 			Statement s = conn.createStatement();
 
 			// Get data related to this isotope from this specific isotope's table in database
 			String query = "SELECT E, range, nT, crossSection FROM " + name;
+
 			try {
 				if(GUI.getSelectedItem().equals("Alpha")) {
 				query = "SELECT E, Arange, AnT, AcrossSection FROM " + name;
+				queryQ = "SELECT qAn FROM isotopes WHERE isotope='" + name + "'";
 				}
 			}catch (Exception e){
 					JOptionPane.showMessageDialog(null,  "Data does not exist to do this calculation", "Error", JOptionPane.WARNING_MESSAGE);
@@ -132,16 +140,25 @@ public class Isotope {
 
 		// Get data related to this isotope from 'isotopes' table in database
 		Statement s2;
+		Statement s3;
 		try {
 			s2 = conn.createStatement();
 			String query2 = "SELECT abundance, transmuted, halflife , gamma FROM isotopes WHERE isotope='" + name + "'";
 			ResultSet isotopeData2 = s2.executeQuery(query2);
+
 			while(isotopeData2.next()) {
 				abundance = isotopeData2.getDouble(1);
 				transmuted = isotopeData2.getString(2);
 				halfLife = isotopeData2.getDouble(3);
 				gamma = isotopeData2.getDouble(4);
 			}
+
+			s3 = conn.createStatement();
+			ResultSet isotopeDataQ = s3.executeQuery(queryQ);
+			isotopeDataQ.next();
+			qValue = isotopeDataQ.getDouble(1);
+			System.out.println(qValue);
+
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
@@ -185,7 +202,7 @@ public class Isotope {
 
 			double nT;
 			double crossSection;
-			double ratio;//removed
+			double ratio;//removed from neutron yield calc i do not believe it should be there
 			double neutronYield;
 
 			if(i == energyIndex) {  //TODO if we just put this if statment after the for loop and make the for loop loop to energyindex-1 then we dont need the if statment
