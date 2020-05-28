@@ -205,7 +205,7 @@ public class Isotope {
 		int thresholdIndex = getEnergyIndex(threshHoldEnergy);
 
 		// Only do the calculations up to the specified energy level
-		for (int i = thresholdIndex; i <= energyIndex; i++) {  //TODO these are all calculations they should be contained in therir own function or moved to calculations function or the calculations function needs to be renamed
+		for (int i = 0; i <= energyIndex; i++) {  //TODO these are all calculations they should be contained in therir own function or moved to calculations function or the calculations function needs to be renamed
 			@SuppressWarnings("unused")
 			InterpolatedValues result;		
 
