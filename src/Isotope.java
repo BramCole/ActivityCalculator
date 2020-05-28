@@ -95,6 +95,7 @@ public class Isotope {
 
 
 		String queryQ = "SELECT qPn FROM isotopes WHERE isotope='" + name + "'";
+		double protonMassOrAlphaMassSelected = 1;
 
 
 
@@ -103,11 +104,13 @@ public class Isotope {
 
 			// Get data related to this isotope from this specific isotope's table in database
 			String query = "SELECT E, range, nT, crossSection FROM " + name;
+			protonMassOrAlphaMassSelected = 1;  //mass of proton is 1 amu
 
 			try {
 				if(GUI.getSelectedItem().equals("Alpha")) {
 				query = "SELECT E, Arange, AnT, AcrossSection FROM " + name;
 				queryQ = "SELECT qAn FROM isotopes WHERE isotope='" + name + "'";
+				protonMassOrAlphaMassSelected = 4;  //mass of alpha is 4 amu
 				}
 			}catch (Exception e){
 					JOptionPane.showMessageDialog(null,  "Data does not exist to do this calculation", "Error", JOptionPane.WARNING_MESSAGE);
@@ -157,7 +160,6 @@ public class Isotope {
 			ResultSet isotopeDataQ = s3.executeQuery(queryQ);
 			isotopeDataQ.next();
 			qValue = isotopeDataQ.getDouble(1);
-			System.out.println(qValue);
 
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -180,6 +182,8 @@ public class Isotope {
 			error += "\n Halflife = 0";
 		}if(gamma == 0) {
 			error += "\n Gamma = 0";
+		}if(qValue == 0){
+			error += "\n Qvalue = 0";
 		}
 		
 		if(!error.equals("Some data for isotope "+ name +" is empty or 0")) {
@@ -193,8 +197,15 @@ public class Isotope {
 			outRealTimeSourceActivity = 0;
 			outSourceDecayActivity = 0;
 		}
+
+		String nameToAtomicMass = name;  //extracts atomic mass from isotope name
+		nameToAtomicMass= nameToAtomicMass.replaceAll("[^\\d.]", "");
+		double atomicMass = Double.parseDouble(nameToAtomicMass);
+		double threshHoldEnergy = qValue*(1+(protonMassOrAlphaMassSelected/atomicMass));
+		int thresholdIndex = getEnergyIndex(threshHoldEnergy);
+
 		// Only do the calculations up to the specified energy level
-		for (int i = 0; i <= energyIndex; i++) {  //TODO these are all calculations they should be contained in therir own function or moved to calculations function or the calculations function needs to be renamed
+		for (int i = thresholdIndex; i <= energyIndex; i++) {  //TODO these are all calculations they should be contained in therir own function or moved to calculations function or the calculations function needs to be renamed
 			@SuppressWarnings("unused")
 			InterpolatedValues result;		
 
@@ -204,6 +215,7 @@ public class Isotope {
 			double crossSection;
 			double ratio;//removed from neutron yield calc i do not believe it should be there
 			double neutronYield;
+
 
 			if(i == energyIndex) {  //TODO if we just put this if statment after the for loop and make the for loop loop to energyindex-1 then we dont need the if statment
 				result = BackEnd.getInterpolatedValues(energy, name);
@@ -215,11 +227,17 @@ public class Isotope {
 				double neutronYield1 = nT1 * crossSection1 * current * 60.0;
 				neutronYield = (nT * crossSection * current * 60.0) + neutronYield1;
 			}
-
 			else {
 				nT = data[i][2];
 				crossSection = data[i][3];
 				neutronYield = nT * crossSection * current * 60.0;
+			}
+
+			if(i==thresholdIndex){  //lets say threshold at 5.3 adds a bin at 5.3 to sum
+				result = BackEnd.getInterpolatedValues(energy, name);
+				nT = result.nT;
+				crossSection = result.crossSection;
+				neutronYield = (nT * crossSection * current * 60.0);
 			}
 
 			// Calculations for CALCULATIONS array
