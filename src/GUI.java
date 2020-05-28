@@ -324,7 +324,7 @@ public class GUI extends JFrame {
 	}
 	
 	//the drop down picker to change from a proton calculation to an alpha calculation
-	static String[] calcs = {"Proton", "Alpha"};
+	static String[] calcs = {"Proton(p,n)", "Alpha(a,n)"};
 	private static JComboBox<String> switchCalculation = new JComboBox<String>(calcs);
 	
 	public static String getSelectedItem(){
@@ -735,10 +735,10 @@ public class GUI extends JFrame {
 		overallPanel.add(txtOverallActivityDecay);
 		txtOverallActivityDecay.setColumns(10);
 
-		JLabel lblTotalActivityDecay = new JLabel("Total Activity Decay");
+		JLabel lblTotalActivityDecay = new JLabel("Total Activity Decay(sum of each step)");
 		lblTotalActivityDecay.setHorizontalAlignment(SwingConstants.TRAILING);
 		lblTotalActivityDecay.setVerticalAlignment(SwingConstants.TOP);
-		lblTotalActivityDecay.setBounds(628, 810, 164, 34);
+		lblTotalActivityDecay.setBounds(605, 810, 195, 34);
 		overallPanel.add(lblTotalActivityDecay);
 
 		JLabel lblCi = new JLabel("<html> 10<sup>6</sup> bq </html>");
@@ -753,10 +753,10 @@ public class GUI extends JFrame {
 		overallPanel.add(txtOverallGamma);
 		txtOverallGamma.setColumns(10);
 
-		JLabel lblGamma = new JLabel("Total Gamma");
+		JLabel lblGamma = new JLabel("Total Gamma (sum of each step)");
 		lblGamma.setHorizontalAlignment(SwingConstants.TRAILING);
 		lblGamma.setVerticalAlignment(SwingConstants.TOP);
-		lblGamma.setBounds(628, 845, 164, 34);
+		lblGamma.setBounds(628, 850, 164, 34);
 		overallPanel.add(lblGamma);
 
 		JLabel lblG = new JLabel("<html>µSv/h at 30cm</html>");

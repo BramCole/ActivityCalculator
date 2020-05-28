@@ -62,7 +62,7 @@ public class AdditionalResults extends JPanel {
 		add(lblTotalNeutronYield);
 		
 		txtTotalNeutronYield = new JTextField();
-		txtTotalNeutronYield.setEditable(true);
+		txtTotalNeutronYield.setEditable(false);
 		txtTotalNeutronYield.setBounds(247, 256, 174, 20);
 		add(txtTotalNeutronYield);
 		txtTotalNeutronYield.setColumns(10);

@@ -352,10 +352,10 @@ public class StepPanel extends JPanel {
 		
 		//3 labels for activity decay per step
 
-		JLabel lblTotalActivityDecay = new JLabel("Activity Decay for this step");
+		JLabel lblTotalActivityDecay = new JLabel("Sum of Activity Decay after bombardment");
 		lblTotalActivityDecay.setVerticalAlignment(SwingConstants.TOP);
 		lblTotalActivityDecay.setHorizontalAlignment(SwingConstants.TRAILING);
-		lblTotalActivityDecay.setBounds(563, 345, 163, 31);
+		lblTotalActivityDecay.setBounds(523, 345, 210, 31);
 		resultsPanel.add(lblTotalActivityDecay);
 		
 		JLabel lblCi = new JLabel("<html> 10<sup>6</sup> bq </html>");
@@ -373,10 +373,10 @@ public class StepPanel extends JPanel {
 		
 		//3 steps for gamma dose per step
 		
-		JLabel lblTotalGamma = new JLabel("Gamma for this step");
+		JLabel lblTotalGamma = new JLabel("Sum of Gamma during irradiation ");
 		lblTotalGamma.setVerticalAlignment(SwingConstants.TOP);
 		lblTotalGamma.setHorizontalAlignment(SwingConstants.TRAILING);
-		lblTotalGamma.setBounds(563, 375, 163, 31);
+		lblTotalGamma.setBounds(563, 375, 173, 31);
 		resultsPanel.add(lblTotalGamma);
 		
 		JLabel lblG = new JLabel("<html> \u00B5Sv/h at 30 cm</html>");
