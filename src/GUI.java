@@ -900,6 +900,15 @@ public class GUI extends JFrame {
 							JOptionPane.showMessageDialog(null,  "Please Make sure times are either in standard notation (ex. 750000) or in scientific notation (ex. 7.5E5)", "Error", JOptionPane.WARNING_MESSAGE);
 							break;
 						}
+
+						b:try {
+							energy = Double.parseDouble(thisStep.txtEnergy.getText());
+						} catch (Exception e1){error = true;}
+						if(error) {
+							JOptionPane.showMessageDialog(null,  "Please Make sure energy is in standard notation ", "Error", JOptionPane.WARNING_MESSAGE);
+							break;
+						}
+						
 						
 						thisStep.irradiationTime = irradiationTime;
 						thisStep.decayTime = decayTime; 
