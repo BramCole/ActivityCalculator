@@ -27,6 +27,7 @@ public class Isotope {
 	double outgamma;
 	double doseRate;
 	double qValue;
+	double isoMass;
 
 	ArrayList<Object[]> breakdownArray = new ArrayList<>();
 	ArrayList<Object[]> energyBreakdownArray = new ArrayList<>();
@@ -94,6 +95,8 @@ public class Isotope {
 		fractionalWeight = fw;
 
 
+
+
 		String queryQ = "SELECT qPn FROM isotopes WHERE isotope='" + name + "'";
 		double protonMassOrAlphaMassSelected = 1;
 
@@ -103,12 +106,12 @@ public class Isotope {
 			Statement s = conn.createStatement();
 
 			// Get data related to this isotope from this specific isotope's table in database
-			String query = "SELECT E, range, nT, crossSection FROM " + name;
+			String query = "SELECT E, range, crossSection FROM " + name;
 			protonMassOrAlphaMassSelected = 1;  //mass of proton is 1 amu
 
 			try {
 				if(GUI.getSelectedItem().equals("Alpha")) {
-				query = "SELECT E, Arange, AnT, AcrossSection FROM " + name;
+				query = "SELECT E, Arange, AcrossSection FROM " + name;
 				queryQ = "SELECT qAn FROM isotopes WHERE isotope='" + name + "'";
 				protonMassOrAlphaMassSelected = 4;  //mass of alpha is 4 amu
 				}
@@ -123,13 +126,19 @@ public class Isotope {
 					JOptionPane.showMessageDialog(null,  "Isotope " + name+ " is listed in overall isotopes tabel, but individual isotope table is mising", "Error", JOptionPane.WARNING_MESSAGE);
 					return;
 			}
-			
+
+			String nameToAtomicMass = name;  //extracts atomic mass from isotope name
+			nameToAtomicMass= nameToAtomicMass.replaceAll("[^\\d.]", "");
+			isoMass = Double.parseDouble(nameToAtomicMass);
+			double threshHoldEnergy = qValue*(1+(protonMassOrAlphaMassSelected/ isoMass));
+			int thresholdIndex = getEnergyIndex(threshHoldEnergy);
+
 			int i = 0;
 			while(isotopeData.next()) {
 				double[] row = new double[4];
 				row[0] = isotopeData.getDouble(1);	//energy
 				row[1] = isotopeData.getDouble(2);	//range
-				row[2] = isotopeData.getDouble(3);	//nT
+				row[2] = (row[1]/ isoMass) *6000;	//nT
 				row[3] = isotopeData.getDouble(4);	//crossSection
 				data[i] = row;
 				i++;
@@ -198,10 +207,8 @@ public class Isotope {
 			outSourceDecayActivity = 0;
 		}
 
-		String nameToAtomicMass = name;  //extracts atomic mass from isotope name
-		nameToAtomicMass= nameToAtomicMass.replaceAll("[^\\d.]", "");
-		double atomicMass = Double.parseDouble(nameToAtomicMass);
-		double threshHoldEnergy = qValue*(1+(protonMassOrAlphaMassSelected/atomicMass));
+
+		double threshHoldEnergy = qValue*(1+(protonMassOrAlphaMassSelected/isoMass));
 		int thresholdIndex = getEnergyIndex(threshHoldEnergy);
 
 		// Only do the calculations up to the specified energy level
@@ -218,7 +225,7 @@ public class Isotope {
 
 
 			if(i == energyIndex) {  //TODO if we just put this if statment after the for loop and make the for loop loop to energyindex-1 then we dont need the if statment
-				result = BackEnd.getInterpolatedValues(energy, name);
+				result = BackEnd.getInterpolatedValues(energy, name, isoMass);
 				double nT1 = data[i][2];
 				double crossSection1 = data[i][3];
 				nT = result.nT;
@@ -234,7 +241,7 @@ public class Isotope {
 			}
 
 			if(i==thresholdIndex){  //lets say threshold at 5.3 adds a bin at 5.3 to sum
-				result = BackEnd.getInterpolatedValues(threshHoldEnergy, name);
+				result = BackEnd.getInterpolatedValues(threshHoldEnergy, name, isoMass);
 				nT = result.nT;
 				crossSection = result.crossSection;
 				neutronYield = (nT * crossSection * current * 60.0);

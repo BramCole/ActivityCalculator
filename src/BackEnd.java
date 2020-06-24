@@ -544,17 +544,17 @@ public class BackEnd {
 	}
 
 	// This method will return the cross section and delta range, linearly interpolated from the data in the database
-	public static InterpolatedValues getInterpolatedValues(double targetEnergy, String isotopeName) {//TODO alter so it only interpolates 1 value and call twice
+	public static InterpolatedValues getInterpolatedValues(double targetEnergy, String isotopeName, double isoMass) {//TODO alter so it only interpolates 1 value and call twice
 
 		try {	
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT E, nT, crossSection FROM " + isotopeName ;
+			String query = "SELECT E, range, crossSection FROM " + isotopeName ;
 			try {
 				if(GUI.getSelectedItem().equals("Alpha")) {
-				query = "SELECT E, AnT, AcrossSection FROM " + isotopeName;
+				query = "SELECT E, Arange, AcrossSection FROM " + isotopeName;
 				}
 			}catch (Exception e){
-					query = "SELECT E, nT, crossSection FROM " + isotopeName;
+					query = "SELECT E, range, crossSection FROM " + isotopeName;
 			}
 			ResultSet isotopeData = s.executeQuery(query);
 			//System.out.println(query);
@@ -567,7 +567,7 @@ public class BackEnd {
 			isotopeData.absolute(index);
 			
 			double energyLow = Double.parseDouble(isotopeData.getString(1));
-			double nTLow = Double.parseDouble(isotopeData.getString(2));
+			double nTLow = ((Double.parseDouble(isotopeData.getString(2)))/isoMass)*6000;
 			double crossSectionLow;
 			
 			
@@ -586,7 +586,7 @@ public class BackEnd {
 
 				energyHigh = Double.parseDouble(isotopeData.getString(1));
 				//System.out.println(isotopeData.getString(1));
-				nTHigh = Double.parseDouble(isotopeData.getString(2));
+				nTHigh = ((Double.parseDouble(isotopeData.getString(2)))/isoMass)*6000;
 				try {
 					crossSectionHigh = Double.parseDouble(isotopeData.getString(3));
 				}
