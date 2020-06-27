@@ -324,7 +324,7 @@ public class GUI extends JFrame {
 	}
 	
 	//the drop down picker to change from a proton calculation to an alpha calculation
-	static String[] calcs = {"Proton(p,n)", "Alpha(a,n)"};
+	static String[] calcs = {"Proton(p,n)", "Alpha(a,n)", "Alpha(a,p)"};
 	private static JComboBox<String> switchCalculation = new JComboBox<String>(calcs);
 	
 	public static String getSelectedItem(){

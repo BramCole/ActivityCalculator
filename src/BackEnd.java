@@ -55,7 +55,7 @@ public class BackEnd {
 	public static Connection makeDatabaseConnection() {
 		try {
 			//Should be changed if the programme is being re exported
-			conn = DriverManager.getConnection("jdbc:ucanaccess://./SpreadsheetDB.accdb;");	// Connect to MS Access Database
+			conn = DriverManager.getConnection("jdbc:ucanaccess://./SpreadsheetDBV2.accdb;");	// Connect to MS Access Database
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -442,7 +442,7 @@ public class BackEnd {
 		ArrayList<Object[]> energyBreakdownArray = new ArrayList<>();
 		ArrayList<Object[]> overallResults = new ArrayList<>();
 
-		if(energy <= 1 || energy > 8) {
+		if(energy <= 1 || energy > 20) {
 			neutronDose = 0;
 			neutronField  = 0;
 		}
@@ -544,18 +544,10 @@ public class BackEnd {
 	}
 
 	// This method will return the cross section and delta range, linearly interpolated from the data in the database
-	public static InterpolatedValues getInterpolatedValues(double targetEnergy, String isotopeName, double isoMass) {//TODO alter so it only interpolates 1 value and call twice
+	public static InterpolatedValues getInterpolatedValues(double targetEnergy, String isotopeName, double isoMass, String query) {//TODO alter so it only interpolates 1 value and call twice
 
-		try {	
+		try {
 			Statement s = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			String query = "SELECT E, range, crossSection FROM " + isotopeName ;
-			try {
-				if(GUI.getSelectedItem().equals("Alpha")) {
-				query = "SELECT E, Arange, AcrossSection FROM " + isotopeName;
-				}
-			}catch (Exception e){
-					query = "SELECT E, range, crossSection FROM " + isotopeName;
-			}
 			ResultSet isotopeData = s.executeQuery(query);
 			//System.out.println(query);
 			int index = getEnergyLevelToReplace(isotopeData, targetEnergy);

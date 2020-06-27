@@ -12,6 +12,14 @@ public class Isotope {
 	double abundance;
 	double halfLife;
 	double gamma;
+	double EThresh;
+	String EThreshChoice;
+	double isoMass;
+	double range;
+	double crossection;
+	String rangeChoice;
+	String crossSectionChoice;
+	String query;
 
 	double energy;
 	double current;
@@ -26,8 +34,8 @@ public class Isotope {
 	double outSourceDecayActivity;
 	double outgamma;
 	double doseRate;
-	double qValue;
-	double isoMass;
+
+
 
 	ArrayList<Object[]> breakdownArray = new ArrayList<>();
 	ArrayList<Object[]> energyBreakdownArray = new ArrayList<>();
@@ -83,11 +91,10 @@ public class Isotope {
 		outNeutronYield = 0;
 		outRealTimeSourceActivity = 0;
 		outSourceDecayActivity = 0;
-
 		name = n;
-		data = new double[14][4];
-		calculations = new ArrayList<>();
 
+		data = new double[21][4];  //alter to alter length
+		calculations = new ArrayList<>();
 		energy = irradiationParams[0];
 		current = irradiationParams[1];
 		irradiationTime = irradiationParams[2];
@@ -97,41 +104,53 @@ public class Isotope {
 
 
 
-		String queryQ = "SELECT qPn FROM isotopes WHERE isotope='" + name + "'";
-		double protonMassOrAlphaMassSelected = 1;
+		String queryReactionType = "SELECT qPn FROM isotopes WHERE isotope= "+"'" + name + "'";
 
 
 
 		try {
-			Statement s = conn.createStatement();
 
-			// Get data related to this isotope from this specific isotope's table in database
-			String query = "SELECT E, range, crossSection FROM " + name;
-			protonMassOrAlphaMassSelected = 1;  //mass of proton is 1 amu
+			String reactionTypeChoice = GUI.getSelectedItem();
+			switch(reactionTypeChoice){
+				case "Proton(p,n)":
+					crossSectionChoice = "p_nCrossSection";
+					rangeChoice = "PRange";
+					EThreshChoice = "EThreshPn";
+					break;
+				case "Alpha(a,n)":
+					crossSectionChoice = "a_nCrossSection";
+					rangeChoice = "ARange";
+					EThreshChoice = "EThreshAn";
+					break;
+				case "Alpha(a,p)":
+					crossSectionChoice = "a_pCrossSection";
+					rangeChoice = "ARange";
+					EThreshChoice = "EThreshAp";
+					break;
 
-			try {
-				if(GUI.getSelectedItem().equals("Alpha")) {
-				query = "SELECT E, Arange, AcrossSection FROM " + name;
-				queryQ = "SELECT qAn FROM isotopes WHERE isotope='" + name + "'";
-				protonMassOrAlphaMassSelected = 4;  //mass of alpha is 4 amu
-				}
-			}catch (Exception e){
-					JOptionPane.showMessageDialog(null,  "Data does not exist to do this calculation", "Error", JOptionPane.WARNING_MESSAGE);
-					return;
+
 			}
+			Statement s = conn.createStatement();
+			// Get data related to this isotope from this specific isotope's table in database
+			query = "SELECT E, " + rangeChoice +", "+ crossSectionChoice + " FROM " + name;
+			queryReactionType = "SELECT qAn FROM isotopes WHERE isotope='" + name + "'";
+
+//			}catch (Exception e){
+//					JOptionPane.showMessageDialog(null,  "Data does not exist to do this calculation", "Error", JOptionPane.WARNING_MESSAGE);
+//					return;
+
 			ResultSet isotopeData;
 			try {
 				isotopeData = s.executeQuery(query);
 			} catch(Exception E) {
-					JOptionPane.showMessageDialog(null,  "Isotope " + name+ " is listed in overall isotopes tabel, but individual isotope table is mising", "Error", JOptionPane.WARNING_MESSAGE);
+					//JOptionPane.showMessageDialog(null,  "Isotope " + name+ " is listed in overall isotopes tabel, but individual isotope table is mising", "Error", JOptionPane.WARNING_MESSAGE);
 					return;
 			}
 
 			String nameToAtomicMass = name;  //extracts atomic mass from isotope name
 			nameToAtomicMass= nameToAtomicMass.replaceAll("[^\\d.]", "");
 			isoMass = Double.parseDouble(nameToAtomicMass);
-			double threshHoldEnergy = qValue*(1+(protonMassOrAlphaMassSelected/ isoMass));
-			int thresholdIndex = getEnergyIndex(threshHoldEnergy);
+
 
 			int i = 0;
 			while(isotopeData.next()) {
@@ -139,7 +158,7 @@ public class Isotope {
 				row[0] = isotopeData.getDouble(1);	//energy
 				row[1] = isotopeData.getDouble(2);	//range
 				row[2] = (row[1]/ isoMass) *6000;	//nT
-				row[3] = isotopeData.getDouble(4);	//crossSection
+				row[3] = isotopeData.getDouble(3);	//crossSection
 				data[i] = row;
 				i++;
 			}
@@ -148,14 +167,12 @@ public class Isotope {
 			
 		} catch (SQLException exc) {
 			exc.printStackTrace();
-		}	
-
+		}
 		// Get data related to this isotope from 'isotopes' table in database
 		Statement s2;
-		Statement s3;
 		try {
 			s2 = conn.createStatement();
-			String query2 = "SELECT abundance, transmuted, halflife , gamma FROM isotopes WHERE isotope='" + name + "'";
+			String query2 = "SELECT abundance, transmuted, halflife , gamma, " +EThreshChoice + " FROM isotopes WHERE isotope='" + name + "'";
 			ResultSet isotopeData2 = s2.executeQuery(query2);
 
 			while(isotopeData2.next()) {
@@ -163,13 +180,8 @@ public class Isotope {
 				transmuted = isotopeData2.getString(2);
 				halfLife = isotopeData2.getDouble(3);
 				gamma = isotopeData2.getDouble(4);
+				EThresh = isotopeData2.getDouble(5);
 			}
-
-			s3 = conn.createStatement();
-			ResultSet isotopeDataQ = s3.executeQuery(queryQ);
-			isotopeDataQ.next();
-			qValue = isotopeDataQ.getDouble(1);
-
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
@@ -191,8 +203,8 @@ public class Isotope {
 			error += "\n Halflife = 0";
 		}if(gamma == 0) {
 			error += "\n Gamma = 0";
-		}if(qValue == 0){
-			error += "\n Qvalue = 0";
+		}if(EThresh == 0){
+			error += "\n EThreshold = 0";
 		}
 		
 		if(!error.equals("Some data for isotope "+ name +" is empty or 0")) {
@@ -208,29 +220,27 @@ public class Isotope {
 		}
 
 
-		double threshHoldEnergy = qValue*(1+(protonMassOrAlphaMassSelected/isoMass));
-		int thresholdIndex = getEnergyIndex(threshHoldEnergy);
 
+		int thresholdIndex = getEnergyIndex(EThresh);
 		// Only do the calculations up to the specified energy level
 		for (int i = 0; i <= energyIndex; i++) {  //TODO these are all calculations they should be contained in therir own function or moved to calculations function or the calculations function needs to be renamed
 			@SuppressWarnings("unused")
 			InterpolatedValues result;		
 
 			double thisEnergy = data[i][0];
-
 			double nT;
 			double crossSection;
-			double ratio;//removed from neutron yield calc i do not believe it should be there
+//			double ratio;//removed from neutron yield calc i do not believe it should be there
 			double neutronYield;
 
 
 			if(i == energyIndex) {  //TODO if we just put this if statment after the for loop and make the for loop loop to energyindex-1 then we dont need the if statment
-				result = BackEnd.getInterpolatedValues(energy, name, isoMass);
+				result = BackEnd.getInterpolatedValues(energy, name, isoMass, query);
 				double nT1 = data[i][2];
 				double crossSection1 = data[i][3];
 				nT = result.nT;
 				crossSection = result.crossSection;
-				ratio = result.ratio;
+//				ratio = result.ratio;
 				double neutronYield1 = nT1 * crossSection1 * current * 60.0;
 				neutronYield = (nT * crossSection * current * 60.0) + neutronYield1;
 			}
@@ -241,7 +251,7 @@ public class Isotope {
 			}
 
 			if(i==thresholdIndex){  //lets say threshold at 5.3 adds a bin at 5.3 to sum
-				result = BackEnd.getInterpolatedValues(threshHoldEnergy, name, isoMass);
+				result = BackEnd.getInterpolatedValues(EThresh, name, isoMass, query);
 				nT = result.nT;
 				crossSection = result.crossSection;
 				neutronYield = (nT * crossSection * current * 60.0);
