@@ -482,7 +482,7 @@ public class StepPanel extends JPanel {
 		txtNeutronDose.setColumns(10);
 
 		//EOB activity
-		JLabel lbltotalRealEob = new JLabel("<html>Total Real EOB Activity (10<sup>6</sup> bq)</html>");
+		JLabel lbltotalRealEob = new JLabel("<html>Total EOB Activity (10<sup>6</sup> bq)</html>");
 		lbltotalRealEob.setVerticalAlignment(SwingConstants.TOP);
 		lbltotalRealEob.setHorizontalAlignment(SwingConstants.TRAILING);
 		lbltotalRealEob.setBounds(0, 190, 238, 40);

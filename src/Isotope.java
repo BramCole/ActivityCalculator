@@ -323,7 +323,7 @@ public class Isotope {
 	// Method to get the row index associated with the user-inputed energy value 
 	// (i.e. which bin it falls into)
 	public int getEnergyIndex(double energyLevel) {
-		if(energyLevel <= 1 || energyLevel > 8) {
+		if(energyLevel <= 1 || energyLevel > 20) {
 			return -1;
 		}
 		

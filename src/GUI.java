@@ -753,10 +753,10 @@ public class GUI extends JFrame {
 		overallPanel.add(txtOverallGamma);
 		txtOverallGamma.setColumns(10);
 
-		JLabel lblGamma = new JLabel("Total Gamma (sum of each step)");
+		JLabel lblGamma = new JLabel("Total Gamma Field Decay (sum of each step)");
 		lblGamma.setHorizontalAlignment(SwingConstants.TRAILING);
 		lblGamma.setVerticalAlignment(SwingConstants.TOP);
-		lblGamma.setBounds(628, 850, 164, 34);
+		lblGamma.setBounds(580, 850, 220, 34);
 		overallPanel.add(lblGamma);
 
 		JLabel lblG = new JLabel("<html>µSv/h at 30cm</html>");
@@ -1100,7 +1100,7 @@ public class GUI extends JFrame {
 							// iv) Transmuted Isotopes
 							stepBreakdown.add(BackEnd.createArrayListOfObject(new Object[]{""}));
 							stepBreakdown.add(BackEnd.createArrayListOfObject(new Object[]{"Transmuted Isotopes"}));
-							stepBreakdown.add(BackEnd.createArrayListOfObject(new Object[]{"Target Isotopes", "Transmuted Isotopes", "Activity (ci)", "Activity Decay (ci)"}));
+							stepBreakdown.add(BackEnd.createArrayListOfObject(new Object[]{"Target Isotopes", "Transmuted Isotopes", "Activity EOB(ci)", "Activity Decay (ci)"}));
 							for(Object[] row : thisStep.outputTable) {
 								stepBreakdown.add(BackEnd.createArrayListOfObject(row));
 							}

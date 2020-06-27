@@ -82,7 +82,7 @@ public class ResultsPanel{
 	public static void populateResultsPane(Object[][] tableData, String str) {
 		frame.setVisible(true);
 		
-		String[] columnNames = {"Isotope", "<html> Activity Decay (10<sup>6</sup> bq)</html>", "<html> Gamma Dose Rate  in µSv/h at 30 cm</html>" };
+		String[] columnNames = {"Isotope", "<html> Activity Decay (10<sup>6</sup> bq)</html>", "<html> Gamma Dose Rate Decay in µSv/h at 30 cm</html>" };
 		DefaultTableModel model;
 		model = new DefaultTableModel(tableData, columnNames) {};
 		table.setModel(model);
